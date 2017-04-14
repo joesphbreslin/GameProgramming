@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-	bool key, potion, sword;
+	static public bool key, potion, sword;
 	public int imageCount;
 	static public int inventoryCount;
 	public Image[] inventory;
@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 	public GameObject[] items;
 
 
-	float health;
+	public static float health;
 	static public string textUi;
 	// Use this for initialization
 	void Awake ()
@@ -26,10 +26,11 @@ public class GameManager : MonoBehaviour
 		textUi = "awake";
 	}
 
-	public void HealthUI (float val)
+public void HealthUI (float val)
 	{
 		healthSlider.value = health;
-	}
+}
+
 
 	public void TextUI ()
 	{
@@ -136,9 +137,6 @@ public class GameManager : MonoBehaviour
 	{
 		TextUI ();
 		healthSlider.value = health;
-		if (Input.GetKeyDown (KeyCode.A)) {
-			health--;
-		}
 		Inventory ();
 		Debug.Log (inventoryCount);
 	}

@@ -54,7 +54,7 @@ public class chestScript : MonoBehaviour {
 	}
 
 	void Open(){
-		if (inRange && Input.GetKeyDown(KeyCode.L)) {
+		if (inRange && Input.GetKeyDown(KeyCode.L) && open == false) {
 			open = true;
 			GameManager.textUi = objectText;
 			anim.SetBool ("Open", true);

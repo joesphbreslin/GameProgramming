@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TenguMovement : MonoBehaviour {
-	
+	public GameObject hitBox, sword; 
 	Rigidbody rigidbody;
 	public Animator animator;
-	public float factor, rotFactor, jumpSpeed, jumpTime,runMult, walkMult;
+	public float factor, rotFactor, jumpSpeed, jumpTime,runMult, walkMult, timer, strikeTime;
 	float rotSpeed, speed;
 	bool grounded, run, crouch;
-
-	//Triggers for Grounded variables
+	public static bool strikeCool, swordEquip;
 
 	void OnTriggerEnter(Collider col)
 	{
 		if (col.tag == "Ground") {
 			grounded = true;
 			animator.SetBool ("Jump", false);
+		}
+		if (col.tag == "EnemyStrike") {
+			GameManager.health = GameManager.health - 5;
 		}
 	}
 
@@ -37,7 +39,6 @@ public class TenguMovement : MonoBehaviour {
 	void Start () {
 		rigidbody = this.gameObject.GetComponent<Rigidbody> ();
 		animator = GetComponent<Animator> ();
-
 	}
 		
 	void Jump()
@@ -85,7 +86,6 @@ public class TenguMovement : MonoBehaviour {
 	}
 
 	void Rotate(){
-		//Assign Horizontal Axis to rotation.
 		rotSpeed = Input.GetAxisRaw ("Horizontal");
 		animator.SetFloat ("Rotation", rotSpeed);
 		rigidbody.transform.Rotate (Vector3.up * rotSpeed * rotFactor);
@@ -94,8 +94,30 @@ public class TenguMovement : MonoBehaviour {
 	void Strike(){
 		if (Input.GetKeyDown (KeyCode.Return) && grounded) {
 			animator.SetTrigger ("Strike_1");
+			strikeCool = true;
+		}
+
+		if (strikeCool) {
+			if (timer < strikeTime) {
+				timer = timer + 0.01f;
+				if (GameManager.sword == true) {
+					hitBox.tag = "Untagged";
+					sword.tag = "Sword";
+				} else {
+					hitBox.tag = "PlayerPunch";
+				}
+			} else if (timer > strikeTime) {
+				strikeCool = false;
+				hitBox.tag = "Untagged";
+				sword.tag = "Untagged";
+
+			}
+
+		} else {
+			timer = 0.0f;
 		}
 	}
+	
 
 
 	void FixedUpdate () {
